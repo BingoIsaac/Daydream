@@ -1,3 +1,4 @@
+-- Example made by twink marie
 local Material = loadstring(game:HttpGet('https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua'))()
 
 local X = Material.Load({
@@ -82,6 +83,89 @@ local a_c = a.TextField({
         Default = function(self)
             X.Banner({
                 Text = 'Default for speed is "h".'
+            })
+        end
+    }
+})
+
+local dupeType = nil
+local dupeItem = nil
+local dupeAmount = nil
+
+local b = X.New({
+    Title = 'Duping'
+})
+
+local b_a = b.Button({
+    Text = 'DUPE!',
+    Callback = function()
+        if dupeType == nil then
+            X.Banner({
+                Text = 'Set a dupe type first!'
+            })
+        else
+            if dupeType == 1 then
+                game.ReplicatedStorage.Events.SubmitTrade:FireServer(dupeItem, dupeAmount, 100000)
+                wait()
+                game.ReplicatedStorage.Events.ChestDrop:FireServer(dupeItem)
+            elseif dupeType == 2 then
+                game.ReplicatedStorage.Events.SubmitTrade:FireServer(dupeItem, dupeAmount, 100000)
+                wait()
+                game.ReplicatedStorage.Events.DropBagItem:FireServer(dupeItem)
+            end
+        end
+    end,
+    Menu = {
+        Information = function(self)
+            X.Banner({
+                Text = 'Dupe your item; will require advanced experience!'
+            })
+        end
+    }
+})
+
+local b_b = b.TextField({
+    Text = 'Amount',
+    Callback = function(Value)
+        dupeAmount = tonumber(Value)
+    end,
+    Menu = {
+        Information = function(self)
+            X.Banner({
+                Text = 'Will require advanced experience!'
+            })
+        end
+    }
+})
+
+local b_c = b.TextField({
+    Text = 'Item',
+    Callback = function(Value)
+        dupeItem = tostring(Value)
+    end,
+    Menu = {
+        Information = function(self)
+            X.Banner({
+                Text = 'Will require advanced experience!'
+            })
+        end
+    }
+})
+
+local b_d = b.Dropdown({
+    Text = 'Dupe Type',
+    Callback = function(Value)
+        if Value == 'Chest' then
+            dupeType = 1
+        elseif Value == 'Item' then
+            dupeType = 2
+        end
+    end,
+    Options = {'Chest', 'Item'},
+    Menu = {
+        Information = function(self)
+            X.Banner({
+                Text = 'Type for duping; will require advanced experience!'
             })
         end
     }
