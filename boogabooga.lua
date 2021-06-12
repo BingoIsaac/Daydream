@@ -1,4 +1,3 @@
--- Example made by twink marie
 local Material = loadstring(game:HttpGet('https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua'))()
 
 local X = Material.Load({
@@ -10,9 +9,7 @@ local X = Material.Load({
 })
 
 local p = game.Players.LocalPlayer
-local c = p.Character
 local m = p:GetMouse()
-local h = c:FindFirstChild('HumanoidRootPart')
 
 local a = X.New({
     Title = 'LocalPlayer'
@@ -32,7 +29,7 @@ local a_a = a.Button({
                 if key == speedKeybind then
                     speedLoop = true
                     while speedLoop do
-                        h.CFrame = h.CFrame + h.CFrame.lookVector * 3
+                        p.Character:FindFirstChild('HumanoidRootPart').CFrame = p.Character:FindFirstChild('HumanoidRootPart').CFrame + p.Character:FindFirstChild('HumanoidRootPart').CFrame.lookVector * 3
                         wait()
                     end
                 end
