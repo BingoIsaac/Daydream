@@ -90,7 +90,8 @@ local a_c = a.TextField({
 
 local dupeType = nil
 local dupeItem = nil
-local dupeAmount = nil
+local dupeAmountChest = nil
+local dupeAmountChest = nil
 
 local b = X.New({
     Title = 'Duping'
@@ -105,11 +106,12 @@ local b_a = b.Button({
             })
         else
             if dupeType == 1 then
-                game.ReplicatedStorage.Events.SubmitTrade:FireServer(dupeItem, dupeAmount, 100000)
+                dupeAmountChest = tonumber(p.PlayerGui.MainGui.LeftPanel.Shop.Lists.ChestList:FindFirstChild(dupeItem).Quantity.Text) - 0.1
+                game.ReplicatedStorage.Events.SubmitTrade:FireServer(dupeItem, dupeAmountChest, 100000)
                 wait()
                 game.ReplicatedStorage.Events.ChestDrop:FireServer(dupeItem)
             elseif dupeType == 2 then
-                game.ReplicatedStorage.Events.SubmitTrade:FireServer(dupeItem, dupeAmount, 100000)
+                game.ReplicatedStorage.Events.SubmitTrade:FireServer(dupeItem, dupeAmountItem, 100000)
                 wait()
                 game.ReplicatedStorage.Events.DropBagItem:FireServer(dupeItem)
             end
@@ -124,15 +126,20 @@ local b_a = b.Button({
     }
 })
 
-local b_b = b.TextField({
-    Text = 'Amount',
+local b_b = b.Dropdown({
+    Text = 'Dupe Type',
     Callback = function(Value)
-        dupeAmount = tonumber(Value)
+        if Value == 'Chest' then
+            dupeType = 1
+        elseif Value == 'Item' then
+            dupeType = 2
+        end
     end,
+    Options = {'Chest', 'Item'},
     Menu = {
         Information = function(self)
             X.Banner({
-                Text = 'Will require advanced experience!'
+                Text = 'Type for duping; will require advanced experience!'
             })
         end
     }
@@ -152,20 +159,15 @@ local b_c = b.TextField({
     }
 })
 
-local b_d = b.Dropdown({
-    Text = 'Dupe Type',
+local b_d = b.TextField({
+    Text = 'Amount (ITEM ONLY!)',
     Callback = function(Value)
-        if Value == 'Chest' then
-            dupeType = 1
-        elseif Value == 'Item' then
-            dupeType = 2
-        end
+        dupeAmountItem = tonumber(Value)
     end,
-    Options = {'Chest', 'Item'},
     Menu = {
         Information = function(self)
             X.Banner({
-                Text = 'Type for duping; will require advanced experience!'
+                Text = 'Will require advanced experience!'
             })
         end
     }
