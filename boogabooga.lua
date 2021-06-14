@@ -6,14 +6,136 @@ local X = Material.Load({
     Style = 3,
     SizeX = 500,
     SizeY = 350,
-    Theme = 'Dark'
+    Theme = 'Light'
 })
 
 local p = game.Players.LocalPlayer
 local m = p:GetMouse()
 
+function getRoot(plr)
+    return plr:WaitForChild('HumanoidRootPart')
+end
+
+infJumpToggle = nil
+function infJump()
+    
+
+-- thanks infinite yield! full credit <3
+FLYING = false
+QEfly = true
+iyflyspeed = 1
+vehicleflyspeed = 1
+function Fly(vFly)
+	repeat wait() until p and p.Character and getRoot(p.Character) and p.Character:FindFirstChild('Humanoid')
+	repeat wait() until m
+	if flyKeyDown or flyKeyUp then flyKeyDown:Disconnect() flyKeyUp:Disconnect() end
+
+	local T = getRoot(p.Character)
+	local CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+	local lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+	local SPEED = 0
+
+	local function FLY()
+		FLYING = true
+		local BG = Instance.new('BodyGyro')
+		local BV = Instance.new('BodyVelocity')
+		BG.P = 9e4
+		BG.Parent = T
+		BV.Parent = T
+		BG.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+		BG.CFrame = T.CFrame
+		BV.Velocity = Vector3.new(0, 0, 0)
+		BV.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+		spawn(function()
+			repeat wait()
+				if not vfly and p.Character:FindFirstChildOfClass('Humanoid') then
+				    pr.Character:FindFirstChildOfClass('Humanoid').PlatformStand = true
+				end
+				if CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0 then
+					SPEED = 50
+				elseif not (CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0) and SPEED ~= 0 then
+					SPEED = 0
+				end
+				if (CONTROL.L + CONTROL.R) ~= 0 or (CONTROL.F + CONTROL.B) ~= 0 or (CONTROL.Q + CONTROL.E) ~= 0 then
+					BV.Velocity = ((workspace.CurrentCamera.CoordinateFrame.lookVector * (CONTROL.F + CONTROL.B)) + ((workspace.CurrentCamera.CoordinateFrame * CFrame.new(CONTROL.L + CONTROL.R, (CONTROL.F + CONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - workspace.CurrentCamera.CoordinateFrame.p)) * SPEED
+					lCONTROL = {F = CONTROL.F, B = CONTROL.B, L = CONTROL.L, R = CONTROL.R}
+				elseif (CONTROL.L + CONTROL.R) == 0 and (CONTROL.F + CONTROL.B) == 0 and (CONTROL.Q + CONTROL.E) == 0 and SPEED ~= 0 then
+					BV.Velocity = ((workspace.CurrentCamera.CoordinateFrame.lookVector * (lCONTROL.F + lCONTROL.B)) + ((workspace.CurrentCamera.CoordinateFrame * CFrame.new(lCONTROL.L + lCONTROL.R, (lCONTROL.F + lCONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - workspace.CurrentCamera.CoordinateFrame.p)) * SPEED
+				else
+					BV.Velocity = Vector3.new(0, 0, 0)
+				end
+				BG.CFrame = workspace.CurrentCamera.CoordinateFrame
+			until not FLYING
+			CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+			lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+			SPEED = 0
+			BG:Destroy()
+			BV:Destroy()
+			if p.Character:FindFirstChildOfClass('Humanoid') then
+				p.Character:FindFirstChildOfClass('Humanoid').PlatformStand = false
+			end
+		end)
+	end
+	flyKeyDown = m.KeyDown:Connect(function(key)
+		if key:lower() == 'w' then
+			CONTROL.F = (vfly and vehicleflyspeed or iyflyspeed)
+		elseif key:lower() == 's' then
+			CONTROL.B = - (vfly and vehicleflyspeed or iyflyspeed)
+		elseif key:lower() == 'a' then
+			CONTROL.L = - (vfly and vehicleflyspeed or iyflyspeed)
+		elseif key:lower() == 'd' then 
+			CONTROL.R = (vfly and vehicleflyspeed or iyflyspeed)
+		elseif QEfly and key:lower() == 'e' then
+			CONTROL.Q = (vfly and vehicleflyspeed or iyflyspeed)*2
+		elseif QEfly and key:lower() == 'q' then
+			CONTROL.E = -(vfly and vehicleflyspeed or iyflyspeed)*2
+		end
+		pcall(function() workspace.CurrentCamera.CameraType = Enum.CameraType.Track end)
+	end)
+	flyKeyUp = m.KeyUp:Connect(function(key)
+		if key:lower() == 'w' then
+			CONTROL.F = 0
+		elseif key:lower() == 's' then
+			CONTROL.B = 0
+		elseif key:lower() == 'a' then
+			CONTROL.L = 0
+		elseif key:lower() == 'd' then
+			CONTROL.R = 0
+		elseif key:lower() == 'e' then
+			CONTROL.Q = 0
+		elseif key:lower() == 'q' then
+			CONTROL.E = 0
+		end
+	end)
+	FLY()
+end
+
+function NOFLY()
+	FLYING = false
+	if flyKeyDown or flyKeyUp then flyKeyDown:Disconnect() flyKeyUp:Disconnect() end
+	if p.Character:FindFirstChildOfClass('Humanoid') then
+		p.Character:FindFirstChildOfClass('Humanoid').PlatformStand = false
+	end
+	pcall(function() workspace.CurrentCamera.CameraType = Enum.CameraType.Custom end)
+end
+    
+
 local a = X.New({
     Title = 'LocalPlayer'
+})
+
+local a_a = a.Button({
+    Text = 'Load InfYield',
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    end,
+    Menu = {
+        Information = function(self)
+            X.Banner({
+                Text = 'Loads Infinite Yield admin.'
+            })
+        end
+    }
 })
 
 speedKeybind = 'h'
@@ -21,7 +143,7 @@ speedLoop = nil
 speedKeyDown = nil
 speedKeyUp = nil
 speedEnabled = false
-local a_a = a.Button({
+local a_b = a.Button({
     Text = 'Speed',
     Callback = function()
         if speedEnabled == false then
@@ -51,7 +173,7 @@ local a_a = a.Button({
     }
 })
 
-local a_b = a.Button({
+local a_c = a.Button({
     Text = 'Stop Speed',
     Callback = function()
         if speedEnabled == true then
@@ -69,7 +191,7 @@ local a_b = a.Button({
     }
 })
 
-local a_c = a.TextField({
+local a_d = a.TextField({
     Text = 'Speed Keybind',
     Callback = function(Value)
         speedKeybind = tostring(Value)
@@ -86,6 +208,23 @@ local a_c = a.TextField({
             })
         end
     }
+})
+
+infJumpToggle = nil
+local a_e = a.Toggle({
+    Text = 'Inf Jump',
+    Callback = function(Value)
+        if Value then
+            infJumpToggle = m.KeyDown:Connect(function(key)
+                if key:byte() == 32 then
+                    --
+                end
+            end)
+        elseif not Value then
+            
+        end
+    end,
+    Enabled = false
 })
 
 local dupeType = nil
@@ -111,6 +250,7 @@ local b_a = b.Button({
                 wait()
                 game.ReplicatedStorage.Events.ChestDrop:FireServer(dupeItem)
             elseif dupeType == 2 then
+                dupeAmountItem = tonumber(dupeAmountItem) - 0.1
                 game.ReplicatedStorage.Events.SubmitTrade:FireServer(dupeItem, dupeAmountItem, 100000)
                 wait()
                 game.ReplicatedStorage.Events.DropBagItem:FireServer(dupeItem)
