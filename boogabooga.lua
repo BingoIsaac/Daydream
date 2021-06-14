@@ -16,9 +16,21 @@ function getRoot(plr)
     return plr:WaitForChild('HumanoidRootPart')
 end
 
-infJumpToggle = nil
+infJumpToggle = false
+infJumpFunction = nil
 function infJump()
-    
+    if not infJumpToggle then
+        infJumpToggle = true
+        infJumpFunction = m.KeyDown:Connect(function(key)
+            if key:byte() == 32 then
+                p.Character:FindFirstChild('Humanoid'):ChangeState(3)
+            end
+        end)
+    elseif infJumpToggle then
+        infJumpToggle = false
+        infJumpFunction:Disconnect()
+    end
+end
 
 -- thanks infinite yield! full credit <3
 FLYING = false
@@ -49,7 +61,7 @@ function Fly(vFly)
 		spawn(function()
 			repeat wait()
 				if not vfly and p.Character:FindFirstChildOfClass('Humanoid') then
-				    pr.Character:FindFirstChildOfClass('Humanoid').PlatformStand = true
+				    p.Character:FindFirstChildOfClass('Humanoid').PlatformStand = true
 				end
 				if CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0 then
 					SPEED = 50
@@ -110,7 +122,7 @@ function Fly(vFly)
 	FLY()
 end
 
-function NOFLY()
+function noFly()
 	FLYING = false
 	if flyKeyDown or flyKeyUp then flyKeyDown:Disconnect() flyKeyUp:Disconnect() end
 	if p.Character:FindFirstChildOfClass('Humanoid') then
@@ -214,14 +226,21 @@ infJumpToggle = nil
 local a_e = a.Toggle({
     Text = 'Inf Jump',
     Callback = function(Value)
+        infJump()
+    end,
+    Enabled = false
+})
+infJump()
+
+local a_f = a.Toggle({
+    Text = 'Fly',
+    Callback = function(Value)
         if Value then
-            infJumpToggle = m.KeyDown:Connect(function(key)
-                if key:byte() == 32 then
-                    --
-                end
-            end)
+            noFly()
+            wait()
+            Fly(true)
         elseif not Value then
-            
+            noFly()
         end
     end,
     Enabled = false
