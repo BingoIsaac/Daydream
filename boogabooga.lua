@@ -267,7 +267,7 @@ local a_g = a.Slider({
         vehicleflyspeed = tonumber(Value)
     end,
     Min = 1,
-    Max = 10,
+    Max = 3,
     Def = 1,
     Menu = {
         Information = function(self)
