@@ -262,12 +262,13 @@ local a_f = a.Toggle({
 
 local a_g = a.Slider({
     Text = 'Fly Speed',
-    Callback = function(value)
-        print(value)
+    Callback = function(Value)
+        iyflyspeed = tonumber(Value)
+        vehicleflyspeed = tonumber(Value)
     end,
-    Min = 0,
+    Min = 1,
     Max = 10,
-    Def = 4,
+    Def = 1,
     Menu = {
         Information = function(self)
             X.Banner({
