@@ -6,7 +6,7 @@ local X = Material.Load({
     Style = 3,
     SizeX = 500,
     SizeY = 350,
-    Theme = 'Dark'
+    Theme = 'Light'
 })
 
 local p = game.Players.LocalPlayer
@@ -228,7 +228,14 @@ local a_e = a.Toggle({
     Callback = function(Value)
         infJump()
     end,
-    Enabled = false
+    Enabled = false,
+    Menu = {
+        Information = function(self)
+            X.Banner({
+                Text = 'Allows you to jump always, even in air.'
+            })
+        end
+    }
 })
 infJump()
 
@@ -243,7 +250,31 @@ local a_f = a.Toggle({
             noFly()
         end
     end,
-    Enabled = false
+    Enabled = false,
+    Menu = {
+        Information = function(self)
+            X.Banner({
+                Text = 'Fly the character. (RECOMMENDED! WORKS BEST IN A RAFT/SQUAD RAFT)'
+            })
+        end
+    }
+})
+
+local a_g = a.Slider({
+    Text = 'Fly Speed',
+    Callback = function(value)
+        print(value)
+    end,
+    Min = 0,
+    Max = 10,
+    Def = 4,
+    Menu = {
+        Information = function(self)
+            X.Banner({
+                Text = 'Fly speed for the fly toggle.'
+            })
+        end
+    }
 })
 
 local dupeType = nil
