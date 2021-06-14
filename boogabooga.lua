@@ -6,7 +6,7 @@ local X = Material.Load({
     Style = 3,
     SizeX = 500,
     SizeY = 350,
-    Theme = 'Light'
+    Theme = 'Dark'
 })
 
 local p = game.Players.LocalPlayer
